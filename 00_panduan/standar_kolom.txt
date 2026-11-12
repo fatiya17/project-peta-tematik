@@ -1,0 +1,107 @@
+STANDAR KOLOM - PROJECT 1 PETA TEMATIK QGIS
+============================================================
+Aturan umum
+- Tidak ada kolom kode_prov. Kunci join = kolom "provinsi".
+- Ejaan provinsi harus SAMA PERSIS dengan daftar_provinsi_baku.csv
+  (huruf besar/kecil, spasi, singkatan). 38 provinsi.
+- Nama kolom: huruf kecil, tanpa spasi, pakai underscore.
+- Angka: tanpa titik ribuan, tanpa tanda %, desimal pakai titik.
+- Nilai kosong dibiarkan KOSONG (NULL), jangan diisi 0.
+- File CSV: UTF-8, pemisah koma.
+- Kolom bertanda [BPS] = angka asli dari tabel BPS.
+  Kolom bertanda [HITUNG] = dihitung sendiri di QGIS (Field Calculator).
+
+------------------------------------------------------------
+0. DATA UMUM  ->  data_umum.csv  (dibuat sekali, dipakai semua peta)
+------------------------------------------------------------
+provinsi        teks      nama provinsi baku
+luas_km2        desimal   luas wilayah (km2)            [BPS]
+jml_penduduk    bulat     jumlah penduduk (jiwa)        [BPS]
+tahun_data      bulat     tahun luas & penduduk (2025)
+
+------------------------------------------------------------
+1. PETA 1 - TINGKAT KEGEMARAN MEMBACA  ->  tgm_2025.csv
+   Sumber: BPS, "Tingkat Kegemaran Membaca Masyarakat dan
+   Variabel Penyusunnya Menurut Provinsi", 2025
+------------------------------------------------------------
+provinsi        teks      nama provinsi baku
+tahun_tema      bulat     2025
+tgm_total       desimal   skor Tingkat Kegemaran Membaca  [BPS]
+(variabel)      desimal   kolom variabel penyusun, ambil HANYA yang
+                          benar-benar ada di tabel BPS, [BPS]
+
+Catatan Peta 1:
+- TIDAK ada kolom kelas (kelas_tgm) dan TIDAK ada kolom hitung
+  (selisih_tgm). Pengelompokan warna dilakukan lewat style
+  Graduated di QGIS, bukan kolom di tabel.
+- Nama kolom variabel penyusun: awali dengan "tgm_" lalu nama
+  singkat sesuai judul kolom di tabel BPS. Contoh bentuk:
+  tgm_frek_baca, tgm_durasi_baca. Jangan memakai nama yang tidak
+  ada di tabel. Cek dulu header kolom aslinya, baru beri nama.
+- Peta yang ditampilkan memakai tgm_total.
+
+------------------------------------------------------------
+2. PETA 2 - KEPADATAN SEKOLAH  ->  sekolah_2025.csv
+   Sumber: BPS tabel 25 (SD), 26 (SMP), 20 (SMA), 2025/2026
+------------------------------------------------------------
+provinsi        teks
+tahun_ajar      teks      2025/2026
+jml_sd          bulat     jumlah sekolah SD, negeri + swasta   [BPS]
+jml_smp         bulat     jumlah sekolah SMP, negeri + swasta  [BPS]
+jml_sma         bulat     jumlah sekolah SMA, negeri + swasta  [BPS]
+Dihitung di QGIS:
+kepad_sd        desimal   sekolah per 1.000 km2                [HITUNG]
+kepad_smp       desimal                                        [HITUNG]
+kepad_sma       desimal                                        [HITUNG]
+Rumus: CASE WHEN "luas_km2" > 0
+       THEN ("jml_sd" / "luas_km2") * 1000 ELSE NULL END
+Catatan: pakai kolom total negeri+swasta, jangan dijumlah lagi.
+
+------------------------------------------------------------
+3. PETA 3 - PENYELESAIAN PENDIDIKAN  ->  penyelesaian_2023.csv
+   Sumber: BPS tabel 4
+------------------------------------------------------------
+provinsi        teks
+tahun_tema      bulat     2023 (tahun pengamatan)
+selesai_sd      desimal   persen                               [BPS]
+selesai_smp     desimal   persen                               [BPS]
+selesai_sma     desimal   persen                               [BPS]
+Dihitung di QGIS (opsional):
+gap_sd_sma      desimal   "selesai_sd" - "selesai_sma"         [HITUNG]
+
+------------------------------------------------------------
+4. PETA 4 - FASILITAS PENDIDIKAN  ->  fasilitas_desa_2025.csv
+   Sumber: BPS tabel 12 + jumlah desa/kelurahan per provinsi
+------------------------------------------------------------
+provinsi        teks
+tahun_tema      bulat     2025
+total_desa      bulat     jumlah desa/kelurahan                [BPS]
+desa_sd         bulat     desa dengan fasilitas SD             [BPS]
+desa_smp        bulat                                          [BPS]
+desa_sma        bulat                                          [BPS]
+desa_smk        bulat                                          [BPS]
+desa_pt         bulat     desa dengan perguruan tinggi         [BPS]
+Dihitung di QGIS:
+cakup_sd, cakup_smp, cakup_sma, cakup_smk, cakup_pt  (persen)  [HITUNG]
+Rumus: ("desa_sd" / "total_desa") * 100
+
+------------------------------------------------------------
+5. PETA 5 - PERPUSTAKAAN TERAKREDITASI  ->  perpus_2025.csv
+   Sumber: BPS tabel 24
+------------------------------------------------------------
+provinsi        teks
+tahun_tema      bulat     2025
+jml_perpus      bulat     total perpustakaan terakreditasi     [BPS]
+perpus_sekolah  bulat     (sesuaikan dengan kategori asli BPS) [BPS]
+perpus_umum     bulat                                          [BPS]
+perpus_pt       bulat                                          [BPS]
+perpus_khusus   bulat                                          [BPS]
+Dihitung di QGIS:
+kepad_perpus    desimal   perpustakaan per 1.000 km2           [HITUNG]
+Rumus: ("jml_perpus" / "luas_km2") * 1000
+Catatan: nama kategori jenis harus mengikuti tabel asli BPS.
+
+------------------------------------------------------------
+Catatan tahun yang harus ditulis di laporan
+- Data umum: 2025 | Peta 1: 2025 | Peta 2: 2025/2026
+- Peta 3: 2023 (bukan tahun pembaruan tabel) | Peta 4 & 5: 2025
