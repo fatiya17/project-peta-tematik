@@ -1,137 +1,166 @@
-CATATAN SUMBER DATA - PROJECT 1 PETA TEMATIK QGIS
-Semua data: Badan Pusat Statistik (BPS), bps.go.id
-Total Data Diunduh: 
-Tanggal unduh: 11 November 2026. Semua file mentah disimpan di 01_data_mentah.
+CATATAN SUMBER DATA - PROJECT PETA TEMATIK QGIS
+Semua data statistik: Badan Pusat Statistik (BPS), bps.go.id
+Tanggal unduh data: 11 November 2026. Semua file mentah disimpan di folder 01_data_mentah.
 ============================================================
 
-A. DATA UMUM  ->  data_umum.csv
+A. DATA DASAR / UMUM  ->  data_umum_2025.geojson & data_umum_2023.geojson
 ------------------------------------------------------------
 1. Luas Daerah dan Jumlah Pulau Menurut Provinsi (2025)
    Tahun data   : 2025
    Tanggal unduh: 11 November 2026
-   Link         : https://www.bps.go.id/id/statistics-table/3/VUZwV01tSlpPVlpsWlRKbmMxcFhhSGhEVjFoUFFUMDkjMyMwMDAw/luas-daerah-dan-jumlah-pulau-menurut-provinsi.html?year=2025
-   Nama file    : bps_luas_daerah_2025.xlsx
-   Data diambil : luas wilayah  ->  luas_km2
+   Link BPS     : https://www.bps.go.id/id/statistics-table/3/VUZwV01tSlpPVlpsWlRKbmMxcFhhSGhEVjFoUFFUMDkjMyMwMDAw/luas-daerah-dan-jumlah-pulau-menurut-provinsi.html?year=2025
+   Data diambil : luas wilayah (km2)  ->  luas
 
-2. Jumlah Penduduk, Laju Pertumbuhan Penduduk, Distribusi Persentase
-   Penduduk, Kepadatan Penduduk, Rasio Jenis Kelamin Penduduk
-   Menurut Provinsi (2025)
-   Tahun data   : 2025
+2. Jumlah Penduduk Menurut Provinsi (2025 & 2023)
+   Tahun data   : 2025 (dan 2023 untuk proyek penyelesaian pendidikan)
    Tanggal unduh: 11 November 2026
-   Link         : https://www.bps.go.id/id/statistics-table/3/V1ZSbFRUY3lTbFpEYTNsVWNGcDZjek53YkhsNFFUMDkjMyMwMDAw/jumlah-penduduk--laju-pertumbuhan-penduduk--distribusi-persentase-penduduk--kepadatan-penduduk--rasio-jenis-kelamin-penduduk-menurut-provinsi.html?year=2025
-   Nama file    : bps_jumlah_penduduk_2025.xlsx
-   Data diambil : jumlah penduduk  ->  jml_penduduk
-   Cek          : satuan (jiwa atau ribu jiwa)
+   Link BPS     : https://www.bps.go.id/id/statistics-table/3/V1ZSbFRUY3lTbFpEYTNsVWNGcDZjek53YkhsNFFUMDkjMyMwMDAw/jumlah-penduduk--laju-pertumbuhan-penduduk--distribusi-persentase-penduduk--kepadatan-penduduk--rasio-jenis-kelamin-penduduk-menurut-provinsi.html?year=2025
+   Data diambil : jumlah penduduk (jiwa)  ->  populasi
+
+3. Batas Administrasi Polygon 38 Provinsi Indonesia
+   Sumber       : Repository GitHub (yusufsyaifudin/wilayah-indonesia) & penyesuaian batas pemekaran Papua/Bali
+   Format       : GeoJSON (EPSG:4326)
+   File Mentah  : 01_data_mentah/province/
+   Data diambil : batas polygon provinsi, nama provinsi baku  ->  name
+
 
 B. PETA TEMATIK
 ============================================================
 
-PETA 1 - TINGKAT KEGEMARAN MEMBACA  ->  tgm_2025.csv
+PETA 1 - TINGKAT KEGEMARAN MEMBACA
 ------------------------------------------------------------
-Tabel        : Tingkat Kegemaran Membaca Masyarakat dan Variabel
+Tabel BPS    : Tingkat Kegemaran Membaca Masyarakat dan Variabel
                Penyusunnya Menurut Provinsi, 2025
 Tahun data   : 2025
 Tanggal unduh: 11 November 2026
-Link         : https://www.bps.go.id/id/statistics-table/3/TlROMldrTjVjVzEwVWtkbmRUSk5abkk0T0U5Q1FUMDkjMyMwMDAw/tingkat-kegemaran-membaca-masyarakat-dan-variabel-penyusunnya-menurut-provinsi.html?year=2025
-Nama file    : bps_tgm_2025.xlsx
+Link BPS     : https://www.bps.go.id/id/statistics-table/3/TlROMldrTjVjVzEwVWtkbmRUSk5abkk0T0U5Q1FUMDkjMyMwMDAw/tingkat-kegemaran-membaca-masyarakat-dan-variabel-penyusunnya-menurut-provinsi.html?year=2025
+Nama file    : 01_data_mentah/bps_tgm_2025.xlsx (dan bps_tgm_2025.csv)
+File Layer   : 02_data_bersih/tingkat_kegemaran_membaca.geojson
+File Proyek  : 03_peta_tematik/fatiya/tingkat_kegemaran_membaca.qgz
 Data diambil :
-  - Tingkat Kegemaran Membaca (TGM)   -> tgm_total
-  - TGM - Pra Membaca                 -> tgm_pra
-  - TGM - Saat Membaca                -> tgm_saat
-  - TGM - Pasca Membaca               -> tgm_pasca
-Dihitung     : selisih_tgm = "tgm_pasca" - "tgm_pra"
+  - Tingkat Kegemaran Membaca (TGM) Total -> tgm
+  - TGM - Pra Membaca                     -> tgm_pra
+  - TGM - Saat Membaca                    -> tgm_saat
+  - TGM - Pasca Membaca                   -> tgm_pasca
+Dihitung     : selisih = "tgm_pasca" - "tgm_pra"
+Simbologi    : Graduated, kolom "tgm" (skala 0 - 100)
 
-PETA 2 - KEPADATAN SEKOLAH SD, SMP, SMA  ->  sekolah_2025.csv
+
+PETA 2 - RATA-RATA BEBAN SISWA & KETERJANGKAUAN SEKOLAH
 ------------------------------------------------------------
-Tabel        : Jumlah Satuan Pendidikan, Kepala Sekolah dan Pendidik,
+Tabel BPS    : Jumlah Satuan Pendidikan, Kepala Sekolah dan Pendidik,
                serta Peserta Didik SD / SMP / SMA di bawah Kementerian
-               Pendidikan Dasar dan Menengah Menurut Provinsi
-Tahun data   : 2025, cek di tabel)
+               Pendidikan Dasar dan Menengah Menurut Provinsi, 2025/2026
+Tahun data   : 2025 (Tahun Ajaran 2025/2026)
 Tanggal unduh: 11 November 2026
-Link SD      : https://www.bps.go.id/id/statistics-table/3/VWtKTmFFbDZaSFJWWVhOYU16WmhaRzlCYlM5Wlp6MDkjMyMwMDAw/jumlah-satuan-pendidikan--kepala-sekolah-dan-pendidik--serta-peserta-didik-sekolah-dasar--sd--di-bawah-kementerian-pendidikan-dasar-dan-menengah-menurut-provinsi.html?year=2025
-Nama file SD : bps_sekolah_sd_2025.xlsx
-Link SMP     : https://www.bps.go.id/id/statistics-table/3/ZHpkb1ZtcDNZV2RHTlUweVdFZ3JhVkl3Ym1ScVp6MDkjMyMwMDAw/jumlah-satuan-pendidikan--kepala-sekolah-dan-guru--serta-peserta-didik-sekolah-menengah-pertama--smp--di-bawah-kementerian-pendidikan-dasar-dan-menengah-menurut-provinsi.html?year=2025
-Nama file SMP: bps_sekolah_smp_2025.xlsx
-Link SMA     : https://www.bps.go.id/id/statistics-table/3/YTFsRmNubEhOWE5ZTUZsdWVHOHhMMFpPWm5VMFp6MDkjMyMwMDAw/jumlah-satuan-pendidikan--kepala-sekolah-dan-guru--serta-peserta-didik-sekolah-menengah-atas--sma--di-bawah-kementerian-pendidikan-dasar-dan-menengah-menurut-provinsi.html?year=2025
-Nama file SMA: bps_sekolah_sma_2025.xlsx
+Link BPS SD  : https://www.bps.go.id/id/statistics-table/3/VWtKTmFFbDZaSFJWWVhOYU16WmhaRzlCYlM5Wlp6MDkjMyMwMDAw/jumlah-satuan-pendidikan--kepala-sekolah-dan-pendidik--serta-peserta-didik-sekolah-dasar--sd--di-bawah-kementerian-pendidikan-dasar-dan-menengah-menurut-provinsi.html?year=2025
+Link BPS SMP : https://www.bps.go.id/id/statistics-table/3/ZHpkb1ZtcDNZV2RHTlUweVdFZ3JhVkl3Ym1ScVp6MDkjMyMwMDAw/jumlah-satuan-pendidikan--kepala-sekolah-dan-guru--serta-peserta-didik-sekolah-menengah-pertama--smp--di-bawah-kementerian-pendidikan-dasar-dan-menengah-menurut-provinsi.html?year=2025
+Link BPS SMA : https://www.bps.go.id/id/statistics-table/3/YTFsRmNubEhOWE5ZTUZsdWVHOHhMMFpPWm5VMFp6MDkjMyMwMDAw/jumlah-satuan-pendidikan--kepala-sekolah-dan-guru--serta-peserta-didik-sekolah-menengah-atas--sma--di-bawah-kementerian-pendidikan-dasar-dan-menengah-menurut-provinsi.html?year=2025
+File Mentah  : 01_data_mentah/bps_sekolah_sd_2025.xlsx
+               01_data_mentah/bps_sekolah_smp_2025.xlsx
+               01_data_mentah/bps_sekolah_sma_2025.xlsx
+File Layer   : 02_data_bersih/kepadatan_sekolah.geojson
+File Proyek  : 03_peta_tematik/fatiya/rata_rata_beban_murid_persekolah.qgz
+               03_peta_tematik/fatiya/keterjangkauan_sekolah.qgz
 Data diambil :
-  - Jumlah Sekolah SD  (Negeri + Swasta)  -> jml_sd
-  - Jumlah Sekolah SMP (Negeri + Swasta)  -> jml_smp
-  - Jumlah Sekolah SMA (Negeri + Swasta)  -> jml_sma
-Dihitung     : kepad_sd, kepad_smp, kepad_sma (sekolah per 1.000 km2)
-Catatan      : pakai kolom total Negeri+Swasta, jangan dijumlah lagi.
-               Cakupan hanya sekolah di bawah Kemendikdasmen
-               (madrasah tidak termasuk).
+  - Jumlah Sekolah SD  (Negeri + Swasta) -> sd
+  - Jumlah Sekolah SMP (Negeri + Swasta) -> smp
+  - Jumlah Sekolah SMA (Negeri + Swasta) -> sma
+  - Jumlah Murid SD    (Negeri + Swasta) -> murid_sd
+  - Jumlah Murid SMP   (Negeri + Swasta) -> murid_smp
+  - Jumlah Murid SMA   (Negeri + Swasta) -> murid_sma
+Dihitung     :
+  - tot_sekolah   = "sd" + "smp" + "sma"
+  - tot_murid     = "murid_sd" + "murid_smp" + "murid_sma"
+  - beban_sekolah = round("tot_murid" / "tot_sekolah")
+  - rasio_sekolah = ("tot_sekolah" / "populasi") * 10000
+  - kep_sd, kep_smp, kep_sma, kep_sekolah (per 1.000 km2 luas)
+Simbologi    : Graduated, kolom "beban_sekolah" (rata-rata murid per sekolah)
+               atau "rasio_sekolah" (unit sekolah per 10.000 penduduk)
 
-PETA 3 - TINGKAT PENYELESAIAN PENDIDIKAN  ->  penyelesaian_2023.csv
+
+PETA 3 - TINGKAT PENYELESAIAN PENDIDIKAN
 ------------------------------------------------------------
-Tabel        : Tingkat Penyelesaian Pendidikan Menurut Jenjang
+Tabel BPS    : Tingkat Penyelesaian Pendidikan Menurut Jenjang
                Pendidikan dan Provinsi
-Tahun data   : 2023 (tahun pengamatan, bukan tanggal pembaruan tabel)
+Tahun data   : 2023 (Tahun pengamatan resmi survei BPS)
 Tanggal unduh: 11 November 2026
-Link         : https://www.bps.go.id/id/statistics-table/2/MTk4MCMy/tingkat-penyelesaian-pendidikan-menurut-jenjang-pendidikan-dan-provinsi.html
-Nama file    : bps_penyelesaian_pendidikan_2023.xlsx
+Link BPS     : https://www.bps.go.id/id/statistics-table/2/MTk4MCMy/tingkat-penyelesaian-pendidikan-menurut-jenjang-pendidikan-dan-provinsi.html
+File Mentah  : 01_data_mentah/bps_penyelesaian_pendidikan_2023.xlsx
+File Layer   : 02_data_bersih/tingkat_penyelesaian_pendidikan.geojson
+File Proyek  : 03_peta_tematik/fatiya/tingkat_penyelesaian_pendidikan.qgz
 Data diambil :
   - Selesai SD / sederajat    -> selesai_sd
   - Selesai SMP / sederajat   -> selesai_smp
   - Selesai SMA / sederajat   -> selesai_sma
-Dihitung     : gap_sd_sma  = "selesai_sd"  - "selesai_sma"
-               gap_smp_sma = "selesai_smp" - "selesai_sma"
+Dihitung     :
+  - gap_sd_sma  = "selesai_sd"  - "selesai_sma"
+  - gap_smp_sma = "selesai_smp" - "selesai_sma"
+Simbologi    : Graduated, kolom "gap_sd_sma" atau "selesai_sma"
 
-PETA 4 - KETERSEDIAAN FASILITAS PENDIDIKAN  ->  fasilitas_desa_2025.csv
+
+PETA 4 - KETERSEDIAAN FASILITAS PENDIDIKAN DESA
 ------------------------------------------------------------
 Tabel 1      : Jumlah Desa yang Memiliki Fasilitas Sekolah Menurut
-               Provinsi dan Tingkat Pendidikan
-Tahun data   : ........ (cek di tabel; samakan dengan tabel 2)
-Tanggal unduh: 11 November 2026
-Link         : https://www.bps.go.id/id/statistics-table/2/MjA1IzI=/jumlah-desa-yang-memiliki-fasilitas-sekolah-menurut-provinsi-dan-tingkat-pendidikan.html
-Nama file    : bps_desa_fasilitas_sekolah.xlsx  (tambah tahun di belakang nama setelah dicek)
-Data diambil :
-  - Desa SD                 -> desa_sd
-  - Desa SMP                -> desa_smp
-  - SMU (= SMA)             -> desa_sma
-  - SMK                     -> desa_smk
-  - Perguruan Tinggi        -> desa_pt
-
-Tabel 2      : Jumlah Desa/Kelurahan Menurut Provinsi
+               Provinsi dan Tingkat Pendidikan, 2025
 Tahun data   : 2025
 Tanggal unduh: 11 November 2026
-Link         : https://www.bps.go.id/id/statistics-table/3/YkVWWFUyNTJTVTloVGpCeFdFVTNaMk5wUzFaUFFUMDkjMyMwMDAw/jumlah-desa-sup-1--sup--kelurahan-menurut-provinsi.html?year=2025
-Nama file    : bps_jumlah_desa_2025.xlsx
+Link BPS     : https://www.bps.go.id/id/statistics-table/2/MjA1IzI=/jumlah-desa-yang-memiliki-fasilitas-sekolah-menurut-provinsi-dan-tingkat-pendidikan.html
+File Mentah 1: 01_data_mentah/bps_desa_fasilitas_sekolah_2025.xlsx
+Data diambil :
+  - Desa dengan Fasilitas SD          -> desa_sd
+  - Desa dengan Fasilitas SMP         -> desa_smp
+  - Desa dengan Fasilitas SMU (= SMA) -> desa_sma
+  - Desa dengan Fasilitas SMK         -> desa_smk
+  - Desa dengan Perguruan Tinggi      -> desa_pt
+
+Tabel 2      : Jumlah Desa/Kelurahan Menurut Provinsi, 2025
+Tahun data   : 2025
+Tanggal unduh: 11 November 2026
+Link BPS     : https://www.bps.go.id/id/statistics-table/3/YkVWWFUyNTJTVTloVGpCeFdFVTNaMk5wUzFaUFFUMDkjMyMwMDAw/jumlah-desa-sup-1--sup--kelurahan-menurut-provinsi.html?year=2025
+File Mentah 2: 01_data_mentah/bps_jumlah_desa_2025.xlsx
 Data diambil : Jumlah Desa/Kelurahan  -> total_desa
-Dihitung     : cakup_sd, cakup_smp, cakup_sma, cakup_smk, cakup_pt
-               ("desa_x" / "total_desa") * 100
-Catatan      : tahun kedua tabel harus sama. Jika berbeda, tulis di
-               laporan sebagai keterbatasan data.
 
-PETA 5 - PERPUSTAKAAN TERAKREDITASI  ->  perpus_2025.csv
+File Layer   : 02_data_bersih/ketersediaan_fasilitas_pendidikan_desa.geojson
+File Proyek  : 03_peta_tematik/fatiya/ketersediaan_fasilitas_pendidikan_desa.qgz
+Dihitung     :
+  - Persentase desa: cak_sd, cak_smp, cak_sma, cak_smk, cak_pt
+    Rumus: ("desa_x" / "total_desa") * 100
+  - Rata-rata cakupan: cak_fasilitas
+Simbologi    : Graduated, kolom "cak_fasilitas" (%)
+
+
+PETA 5 - PERSEBARAN PERPUSTAKAAN TERAKREDITASI
 ------------------------------------------------------------
-Tabel        : Jumlah Perpustakaan Terakreditasi Menurut Provinsi,
-               Jenis Perpustakaan, dan Predikat Akreditasi
+Tabel BPS    : Jumlah Perpustakaan Terakreditasi Menurut Provinsi,
+               Jenis Perpustakaan, dan Predikat Akreditasi, 2025
 Tahun data   : 2025
 Tanggal unduh: 11 November 2026
-Link         : https://www.bps.go.id/id/statistics-table/3/Um1wWk1FMTNWakJHY20xUldYbzBkRzVLZG1KSlFUMDkjMyMwMDAw/-jumlah-perpustakaan-terakreditasi-menurut-provinsi--jenis-perpustakaan--dan-predikat-akreditasi.html?year=2025
-Nama file    : bps_perpus_terakreditasi_2025.xlsx
+Link BPS     : https://www.bps.go.id/id/statistics-table/3/Um1wWk1FMTNWakJHY20xUldYbzBkRzVLZG1KSlFUMDkjMyMwMDAw/-jumlah-perpustakaan-terakreditasi-menurut-provinsi--jenis-perpustakaan--dan-predikat-akreditasi.html?year=2025
+File Mentah  : 01_data_mentah/bps_perpus_terakreditasi_2025.xlsx
+File Layer   : 02_data_bersih/persebaran_perpustakaan_terakreditas.geojson
+File Proyek  : 03_peta_tematik/fatiya/persebaran_perpustakaan_terakreditasi.qgz
 Data diambil :
-  - Jumlah Perpustakaan - Total                   -> jml_perpus
-  - Perpustakaan Sekolah Terakreditasi            -> perpus_sekolah
-  - Perpustakaan Umum Terakreditasi               -> perpus_umum
-  - Perpustakaan Perguruan Tinggi Terakreditasi   -> perpus_pt
-  - Perpustakaan Khusus Terakreditasi             -> perpus_khusus
-Dihitung     : kepad_perpus = ("jml_perpus" / "luas_km2") * 1000
-Catatan      : jika unduhan berbentuk jenis x predikat, jumlahkan
-               dulu per jenis agar satu baris per provinsi.
+  - Total Perpustakaan Terakreditasi            -> total_perpus
+  - Perpustakaan Sekolah Terakreditasi (Total)  -> p_sekolah
+  - Perpustakaan Umum Terakreditasi (Total)     -> p_umum
+  - Perpustakaan PT Terakreditasi (Total)       -> p_pt
+  - Perpustakaan Khusus Terakreditasi (Total)   -> p_khusus
+  - Perpustakaan Sekolah Terakreditasi A        -> a_sekolah
+  - Perpustakaan Umum Terakreditasi A           -> a_umum
+  - Perpustakaan PT Terakreditasi A             -> a_pt
+  - Perpustakaan Khusus Terakreditasi A         -> a_khusus
+Dihitung     :
+  - perpus_a = "a_umum" + "a_khusus" + "a_sekolah" + "a_pt"
+  - persen_a = ("perpus_a" / "total_perpus") * 100
+Simbologi    : Graduated, kolom "persen_a" (%) atau "total_perpus"
 
-C. RINGKASAN TAHUN DATA (untuk laporan)
-============================================================
-Data umum (luas, penduduk) : 2025
-Peta 1  : 2025
-Peta 2  : 2025
-Peta 3  : 2023
-Peta 4  : 2025 
-Peta 5  : 2025
 
-D. SUMBER LAIN
+C. RINGKASAN TAHUN DATA (Untuk Laporan & Layout Peta)
 ============================================================
-Polygon 38 provinsi : https://github.com/yusufsyaifudin/wilayah-indonesia/tree/master/data/geojson/province
-Tanggal unduh       : 11 November 2026
+- Data umum (luas, penduduk) : 2025 (Peta 1, 2, 4, 5) dan 2023 (Peta 3)
+- Peta 1 (Kegemaran Membaca)          : 2025
+- Peta 2 (Beban / Kepadatan Sekolah)  : 2025 (Tahun Ajaran 2025/2026)
+- Peta 3 (Penyelesaian Pendidikan)    : 2023 (Tahun survei resmi BPS)
+- Peta 4 (Fasilitas Pendidikan Desa)  : 2025
+- Peta 5 (Perpustakaan Terakreditasi) : 2025
