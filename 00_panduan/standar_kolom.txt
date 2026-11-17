@@ -1,107 +1,150 @@
-STANDAR KOLOM - PROJECT 1 PETA TEMATIK QGIS
+STANDAR KOLOM - PROJECT PETA TEMATIK QGIS
 ============================================================
-Aturan umum
-- Tidak ada kolom kode_prov. Kunci join = kolom "provinsi".
-- Ejaan provinsi harus SAMA PERSIS dengan daftar_provinsi_baku.csv
-  (huruf besar/kecil, spasi, singkatan). 38 provinsi.
-- Nama kolom: huruf kecil, tanpa spasi, pakai underscore.
-- Angka: tanpa titik ribuan, tanpa tanda %, desimal pakai titik.
-- Nilai kosong dibiarkan KOSONG (NULL), jangan diisi 0.
-- File CSV: UTF-8, pemisah koma.
-- Kolom bertanda [BPS] = angka asli dari tabel BPS.
-  Kolom bertanda [HITUNG] = dihitung sendiri di QGIS (Field Calculator).
+Aturan Umum & Struktur Data Proyek
+- Kolom kunci identitas wilayah: "name" (nama provinsi baku huruf kapital, 38 provinsi).
+- Nama kolom: huruf kecil, tanpa spasi, menggunakan underscore.
+- Format koordinat: GeoJSON WGS 84 (EPSG:4326), urutan [longitude, latitude].
+- Angka: tanpa titik pemisah ribuan, desimal menggunakan tanda titik (.).
+- Kolom bertanda [BPS]    = data asli dari publikasi/tabel BPS.
+- Kolom bertanda [HITUNG] = dihitung melalui kalkulasi atribut (Field Calculator / Python).
 
 ------------------------------------------------------------
-0. DATA UMUM  ->  data_umum.csv  (dibuat sekali, dipakai semua peta)
+0. DATA DASAR / UMUM (Ada di semua layer peta)
+   File Master: data_umum_2025.geojson & data_umum_2023.geojson
 ------------------------------------------------------------
-provinsi        teks      nama provinsi baku
-luas_km2        desimal   luas wilayah (km2)            [BPS]
-jml_penduduk    bulat     jumlah penduduk (jiwa)        [BPS]
-tahun_data      bulat     tahun luas & penduduk (2025)
+name              teks      nama provinsi baku huruf kapital (kunci identitas)
+latitude          desimal   titik koordinat lintang centroid provinsi
+longitude         desimal   titik koordinat bujur centroid provinsi
+layer             teks      nama layer provinsi asal
+path              teks      path file sumber batas wilayah provinsi
+luas              desimal   luas wilayah (km2)                        [BPS]
+populasi          bulat     jumlah penduduk (jiwa)                    [BPS]
+tahun             bulat     tahun referensi data (2025 atau 2023)
 
 ------------------------------------------------------------
-1. PETA 1 - TINGKAT KEGEMARAN MEMBACA  ->  tgm_2025.csv
-   Sumber: BPS, "Tingkat Kegemaran Membaca Masyarakat dan
-   Variabel Penyusunnya Menurut Provinsi", 2025
+1. PETA 1 - TINGKAT KEGEMARAN MEMBACA
+   File Layer : 02_data_bersih/tingkat_kegemaran_membaca.geojson
+   File Proyek: 03_peta_tematik/fatiya/tingkat_kegemaran_membaca.qgz
+   Sumber     : BPS / Perpustakaan Nasional RI, 2025
+   Tahun Data : 2025
 ------------------------------------------------------------
-provinsi        teks      nama provinsi baku
-tahun_tema      bulat     2025
-tgm_total       desimal   skor Tingkat Kegemaran Membaca  [BPS]
-(variabel)      desimal   kolom variabel penyusun, ambil HANYA yang
-                          benar-benar ada di tabel BPS, [BPS]
+tgm               desimal   skor Tingkat Kegemaran Membaca total      [BPS]
+tgm_pra           desimal   skor TGM kelompok pra-sekolah             [BPS]
+tgm_saat          desimal   skor TGM kelompok saat bersekolah         [BPS]
+tgm_pasca         desimal   skor TGM kelompok pasca-sekolah           [BPS]
+selisih           desimal   selisih skor ("tgm_pasca" - "tgm_pra")    [HITUNG]
 
 Catatan Peta 1:
-- TIDAK ada kolom kelas (kelas_tgm) dan TIDAK ada kolom hitung
-  (selisih_tgm). Pengelompokan warna dilakukan lewat style
-  Graduated di QGIS, bukan kolom di tabel.
-- Nama kolom variabel penyusun: awali dengan "tgm_" lalu nama
-  singkat sesuai judul kolom di tabel BPS. Contoh bentuk:
-  tgm_frek_baca, tgm_durasi_baca. Jangan memakai nama yang tidak
-  ada di tabel. Cek dulu header kolom aslinya, baru beri nama.
-- Peta yang ditampilkan memakai tgm_total.
+- Kolom utama yang digunakan untuk simbologi peta tematik: "tgm".
+- Pewarnaan menggunakan mode Graduated (skala 0 - 100).
 
 ------------------------------------------------------------
-2. PETA 2 - KEPADATAN SEKOLAH  ->  sekolah_2025.csv
-   Sumber: BPS tabel 25 (SD), 26 (SMP), 20 (SMA), 2025/2026
+2. PETA 2 - BEBAN & KETERJANGKAUAN SEKOLAH
+   File Layer : 02_data_bersih/kepadatan_sekolah.geojson
+   File Proyek: 03_peta_tematik/fatiya/rata_rata_beban_murid_persekolah.qgz
+                03_peta_tematik/fatiya/keterjangkauan_sekolah.qgz
+   Sumber     : BPS data persebaran sekolah SD, SMP, SMA, 2025/2026
+   Tahun Data : 2025
 ------------------------------------------------------------
-provinsi        teks
-tahun_ajar      teks      2025/2026
-jml_sd          bulat     jumlah sekolah SD, negeri + swasta   [BPS]
-jml_smp         bulat     jumlah sekolah SMP, negeri + swasta  [BPS]
-jml_sma         bulat     jumlah sekolah SMA, negeri + swasta  [BPS]
-Dihitung di QGIS:
-kepad_sd        desimal   sekolah per 1.000 km2                [HITUNG]
-kepad_smp       desimal                                        [HITUNG]
-kepad_sma       desimal                                        [HITUNG]
-Rumus: CASE WHEN "luas_km2" > 0
-       THEN ("jml_sd" / "luas_km2") * 1000 ELSE NULL END
-Catatan: pakai kolom total negeri+swasta, jangan dijumlah lagi.
+sd                bulat     jumlah sekolah SD (Negeri + Swasta)       [BPS]
+smp               bulat     jumlah sekolah SMP (Negeri + Swasta)      [BPS]
+sma               bulat     jumlah sekolah SMA (Negeri + Swasta)      [BPS]
+tot_sekolah       bulat     total unit sekolah ("sd" + "smp" + "sma") [HITUNG]
+murid_sd          bulat     jumlah murid SD (Negeri + Swasta)         [BPS]
+murid_smp         bulat     jumlah murid SMP (Negeri + Swasta)        [BPS]
+murid_sma         bulat     jumlah murid SMA (Negeri + Swasta)        [BPS]
+tot_murid         bulat     total murid ("murid_sd"+"murid_smp"+"murid_sma") [HITUNG]
+beban_sekolah     bulat     rata-rata murid per sekolah:              [HITUNG]
+                            round("tot_murid" / "tot_sekolah")
+rasio_sekolah     desimal   sekolah per 10.000 penduduk:              [HITUNG]
+                            ("tot_sekolah" / "populasi") * 10000
+kep_sd            desimal   kepadatan SD per 1.000 km2 luas           [HITUNG]
+kep_smp           desimal   kepadatan SMP per 1.000 km2 luas          [HITUNG]
+kep_sma           desimal   kepadatan SMA per 1.000 km2 luas          [HITUNG]
+kep_sekolah       desimal   total sekolah per 1.000 km2 luas          [HITUNG]
+
+Catatan Peta 2:
+- Kolom utama yang digunakan untuk simbologi: "beban_sekolah" (siswa/gedung)
+  atau "rasio_sekolah" (sekolah per 10.000 penduduk).
 
 ------------------------------------------------------------
-3. PETA 3 - PENYELESAIAN PENDIDIKAN  ->  penyelesaian_2023.csv
-   Sumber: BPS tabel 4
+3. PETA 3 - TINGKAT PENYELESAIAN PENDIDIKAN
+   File Layer : 02_data_bersih/tingkat_penyelesaian_pendidikan.geojson
+   File Proyek: 03_peta_tematik/fatiya/tingkat_penyelesaian_pendidikan.qgz
+   Sumber     : BPS, Tingkat Penyelesaian Pendidikan Menurut Jenjang, 2023
+   Tahun Data : 2023
 ------------------------------------------------------------
-provinsi        teks
-tahun_tema      bulat     2023 (tahun pengamatan)
-selesai_sd      desimal   persen                               [BPS]
-selesai_smp     desimal   persen                               [BPS]
-selesai_sma     desimal   persen                               [BPS]
-Dihitung di QGIS (opsional):
-gap_sd_sma      desimal   "selesai_sd" - "selesai_sma"         [HITUNG]
+selesai_sd        desimal   persentase penyelesaian pendidikan SD (%) [BPS]
+selesai_smp       desimal   persentase penyelesaian pendidikan SMP(%) [BPS]
+selesai_sma       desimal   persentase penyelesaian pendidikan SMA(%) [BPS]
+gap_sd_sma        desimal   kesenjangan SD vs SMA:                    [HITUNG]
+                            "selesai_sd" - "selesai_sma"
+gap_smp_sma       desimal   kesenjangan SMP vs SMA:                   [HITUNG]
+                            "selesai_smp" - "selesai_sma"
+
+Catatan Peta 3:
+- Kolom utama yang digunakan untuk simbologi: "gap_sd_sma" atau "selesai_sma".
+- Tahun data adalah 2023 (tahun survei resmi BPS).
 
 ------------------------------------------------------------
-4. PETA 4 - FASILITAS PENDIDIKAN  ->  fasilitas_desa_2025.csv
-   Sumber: BPS tabel 12 + jumlah desa/kelurahan per provinsi
+4. PETA 4 - KETERSEDIAAN FASILITAS PENDIDIKAN DESA
+   File Layer : 02_data_bersih/ketersediaan_fasilitas_pendidikan_desa.geojson
+   File Proyek: 03_peta_tematik/fatiya/ketersediaan_fasilitas_pendidikan_desa.qgz
+   Sumber     : BPS, Fasilitas Pendidikan Tingkat Desa & Jumlah Desa, 2025
+   Tahun Data : 2025
 ------------------------------------------------------------
-provinsi        teks
-tahun_tema      bulat     2025
-total_desa      bulat     jumlah desa/kelurahan                [BPS]
-desa_sd         bulat     desa dengan fasilitas SD             [BPS]
-desa_smp        bulat                                          [BPS]
-desa_sma        bulat                                          [BPS]
-desa_smk        bulat                                          [BPS]
-desa_pt         bulat     desa dengan perguruan tinggi         [BPS]
-Dihitung di QGIS:
-cakup_sd, cakup_smp, cakup_sma, cakup_smk, cakup_pt  (persen)  [HITUNG]
-Rumus: ("desa_sd" / "total_desa") * 100
+total_desa        bulat     jumlah total desa/kelurahan per provinsi  [BPS]
+desa_sd           bulat     jumlah desa yang memiliki fasilitas SD    [BPS]
+desa_smp          bulat     jumlah desa yang memiliki fasilitas SMP   [BPS]
+desa_sma          bulat     jumlah desa yang memiliki fasilitas SMA   [BPS]
+desa_smk          bulat     jumlah desa yang memiliki fasilitas SMK   [BPS]
+desa_pt           bulat     jumlah desa berfasilitas Perguruan Tinggi [BPS]
+cak_sd            desimal   persen desa berfasilitas SD (%):          [HITUNG]
+                            ("desa_sd" / "total_desa") * 100
+cak_smp           desimal   persen desa berfasilitas SMP (%):         [HITUNG]
+                            ("desa_smp" / "total_desa") * 100
+cak_sma           desimal   persen desa berfasilitas SMA (%):         [HITUNG]
+                            ("desa_sma" / "total_desa") * 100
+cak_smk           desimal   persen desa berfasilitas SMK (%):         [HITUNG]
+                            ("desa_smk" / "total_desa") * 100
+cak_pt            desimal   persen desa berfasilitas PT (%):          [HITUNG]
+                            ("desa_pt" / "total_desa") * 100
+cak_fasilitas     desimal   rata-rata persentase cakupan fasilitas:   [HITUNG]
+                            ("cak_sd" + "cak_smp" + "cak_sma" +
+                             "cak_smk" + "cak_pt") / 5
+
+Catatan Peta 4:
+- Kolom utama yang digunakan untuk simbologi: "cak_fasilitas".
 
 ------------------------------------------------------------
-5. PETA 5 - PERPUSTAKAAN TERAKREDITASI  ->  perpus_2025.csv
-   Sumber: BPS tabel 24
+5. PETA 5 - PERSEBARAN PERPUSTAKAAN TERAKREDITASI
+   File Layer : 02_data_bersih/persebaran_perpustakaan_terakreditas.geojson
+   File Proyek: 03_peta_tematik/fatiya/persebaran_perpustakaan_terakreditasi.qgz
+   Sumber     : BPS / Perpustakaan Nasional RI, 2025
+   Tahun Data : 2025
 ------------------------------------------------------------
-provinsi        teks
-tahun_tema      bulat     2025
-jml_perpus      bulat     total perpustakaan terakreditasi     [BPS]
-perpus_sekolah  bulat     (sesuaikan dengan kategori asli BPS) [BPS]
-perpus_umum     bulat                                          [BPS]
-perpus_pt       bulat                                          [BPS]
-perpus_khusus   bulat                                          [BPS]
-Dihitung di QGIS:
-kepad_perpus    desimal   perpustakaan per 1.000 km2           [HITUNG]
-Rumus: ("jml_perpus" / "luas_km2") * 1000
-Catatan: nama kategori jenis harus mengikuti tabel asli BPS.
+total_perpus      bulat     jumlah total perpustakaan terakreditasi   [BPS]
+p_sekolah         bulat     total perpustakaan sekolah terakreditasi  [BPS]
+p_umum            bulat     total perpustakaan umum terakreditasi     [BPS]
+p_pt              bulat     total perpustakaan perguruan tinggi akred [BPS]
+p_khusus          bulat     total perpustakaan khusus terakreditasi   [BPS]
+a_sekolah         bulat     perpustakaan sekolah terakreditasi A      [BPS]
+a_umum            bulat     perpustakaan umum terakreditasi A         [BPS]
+a_pt              bulat     perpustakaan perguruan tinggi akreditasi A[BPS]
+a_khusus          bulat     perpustakaan khusus terakreditasi A       [BPS]
+perpus_a          bulat     total perpustakaan terakreditasi A:       [HITUNG]
+                            "a_umum" + "a_khusus" + "a_sekolah" + "a_pt"
+persen_a          desimal   persen perpustakaan terakreditasi A (%):  [HITUNG]
+                            ("perpus_a" / "total_perpus") * 100
+
+Catatan Peta 5:
+- Kolom utama yang digunakan untuk simbologi: "persen_a" atau "total_perpus".
 
 ------------------------------------------------------------
-Catatan tahun yang harus ditulis di laporan
-- Data umum: 2025 | Peta 1: 2025 | Peta 2: 2025/2026
-- Peta 3: 2023 (bukan tahun pembaruan tabel) | Peta 4 & 5: 2025
+Catatan Tahun Data untuk Laporan & Layout Peta
+- Data Umum / Dasar : 2025 (Kecuali peta 3 menggunakan dasar 2023)
+- Peta 1 (Kegemaran Membaca)          : 2025
+- Peta 2 (Beban / Kepadatan Sekolah)  : 2025
+- Peta 3 (Penyelesaian Pendidikan)    : 2023 (Tahun survei resmi BPS)
+- Peta 4 (Fasilitas Pendidikan Desa)  : 2025
+- Peta 5 (Perpustakaan Terakreditasi) : 2025
